@@ -1,23 +1,35 @@
- <!DOCTYPE html>\
-<html>\
-<head>\
-  <meta charset="utf-8">\
-  <title>Redirecting to Payment...</title>\
-  \
-  <meta http-equiv="refresh" content="0; url=upi://pay?pa=dhruvpanchal1901@ybl&pn=Dhruv" />\
-  \
-  <style>\
-    body \{ font-family: sans-serif; text-align: center; padding-top: 50px; \}\
-  </style>\
-</head>\
-<body>\
-  <p>Redirecting to your payment app...</p>\
-  \
-  <p>\
-    If it does not work, please \
-    <a href="upi://pay?pa=dhruvpanchal1901@ybl&pn=Dhruv">\
-      click here to pay\
-    </a>.\
-  </p>\
-</body>\
-</html>}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pay Dhruv</title>
+    <style>
+        body { 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+        }
+        a.pay-button {
+            display: block;
+            padding: 20px 40px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #ffffff;
+            background-color: #007aff;
+            border-radius: 12px;
+            text-decoration: none;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <a class="pay-button" href="upi://pay?pa=dhruvpanchal1901@ybl&pn=Dhruv">
+        Tap to Pay Dhruv
+    </a>
+</body>
+</html>
