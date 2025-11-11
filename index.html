@@ -1,66 +1,224 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pay Dhruv</title>
-    <style>
-        body { 
-            display: flex; 
-            flex-direction: column;
-            justify-content: center; 
-            align-items: center; 
-            min-height: 100vh; 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: #f0f2f5;
-            margin: 0;
-            padding: 20px;
-            box-sizing: border-box;
-        }
-        .pay-button {
-            display: block;
-            width: 80%;
-            max-width: 300px;
-            padding: 20px;
-            margin-bottom: 20px;
-            font-size: 20px;
-            font-weight: bold;
-            color: #ffffff;
-            border-radius: 12px;
-            text-decoration: none;
-            text-align: center;
-        }
-        /* PhonePe Button */
-        .phonepe { background-color: #6739B7; }
-        /* GPay Button */
-        .gpay { background-color: #4285F4; }
-        /* Paytm Button */
-        .paytm { background-color: #00BAF2; }
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Pay to Dhruv — iOS Liquid Glass UI</title>
+  <style>
+    :root{
+      --bg-1: #e9f0fb;
+      --bg-2: #f7fbff;
+      --glass-tint: rgba(255,255,255,0.55);
+      --glass-weak: rgba(255,255,255,0.35);
+      --accent: #0a84ff; /* iOS-blue */
+      --muted:#6b7280;
+      --card-radius:22px;
+      --shadow-lg: 0 20px 40px rgba(10,16,28,0.10);
+      --glass-shadow: 0 8px 30px rgba(10,16,28,0.06);
+      font-family: -apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',Roboto,'Helvetica Neue',Arial;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0}
+    body{
+      background: radial-gradient(1200px 600px at 10% 20%, rgba(10,132,255,0.06), transparent 6%),
+                  radial-gradient(1000px 500px at 90% 80%, rgba(96,165,250,0.04), transparent 6%),
+                  linear-gradient(180deg,var(--bg-2),var(--bg-1));
+      -webkit-font-smoothing:antialiased;display:flex;align-items:center;justify-content:center;padding:28px;color:#051426;
+    }
 
-        h2 {
-            font-weight: 500;
-            color: #333;
-        }
-    </style>
+    /* Liquid floating blobs background to create 'liquid glass' feel */
+    .liquid-bg{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+    .blob{
+      position:absolute;border-radius:50%;filter:blur(36px) saturate(120%);opacity:0.9;transform:translate3d(0,0,0);
+    }
+    .blob.b1{width:420px;height:420px;left:-120px;top:-80px;background:linear-gradient(135deg,#a7d8ff 0%, #cfe9ff 100%);}
+    .blob.b2{width:360px;height:360px;right:-90px;bottom:-100px;background:linear-gradient(135deg,#ffdede 0%, #fff4d6 100%);opacity:0.85}
+
+    .viewport{position:relative;z-index:2;width:390px;max-width:92vw;border-radius:28px;padding:18px;backdrop-filter: blur(12px) saturate(120%);}
+
+    /* Glass shell with inner frosted panel and glossy highlight */
+    .glass-shell{
+      border-radius:28px;padding:16px;position:relative;overflow:hidden;
+      background: linear-gradient(180deg, rgba(255,255,255,0.55), rgba(255,255,255,0.35));
+      box-shadow: var(--shadow-lg);
+      border:1px solid rgba(255,255,255,0.45);
+      -webkit-backdrop-filter: blur(10px) saturate(130%);
+    }
+    /* subtle top sheen */
+    .glass-shell::before{
+      content:'';position:absolute;left:-10%;top:-40%;width:120%;height:60%;transform:rotate(-12deg);background:linear-gradient(180deg, rgba(255,255,255,0.85), rgba(255,255,255,0.02));opacity:0.7;pointer-events:none;mix-blend-mode:overlay
+    }
+
+    header.app-header{display:flex;gap:12px;align-items:center;padding:8px 6px 18px;border-radius:14px}
+    .avatar{width:58px;height:58px;border-radius:14px;overflow:hidden;flex:0 0 58px;border:1px solid rgba(255,255,255,0.6);box-shadow:var(--glass-shadow)}
+    .avatar img{width:100%;height:100%;object-fit:cover;display:block}
+    .title-wrap{display:flex;flex-direction:column;justify-content:center;min-width:0}
+    .title{font-size:18px;font-weight:700;line-height:1;color:#041029}
+    .subtitle{font-size:13px;color:var(--muted);margin-top:2px}
+
+    .card{margin-top:6px;background:linear-gradient(180deg, rgba(255,255,255,0.5), rgba(245,249,255,0.35));border-radius:18px;padding:14px;box-shadow:var(--glass-shadow);border:1px solid rgba(10,20,40,0.03)}
+
+    .section-title{font-size:13px;color:var(--muted);margin-bottom:10px;font-weight:600;letter-spacing:0.2px}
+
+    .options{display:flex;flex-direction:column;gap:10px}
+
+    .option{
+      display:flex;align-items:center;gap:12px;padding:12px;border-radius:14px;border:1px solid rgba(255,255,255,0.55);cursor:pointer;transition:transform .18s cubic-bezier(.2,.9,.3,1), box-shadow .18s;backdrop-filter:blur(6px)
+    }
+    .option:hover{transform:translateY(-4px);box-shadow:0 10px 24px rgba(8,30,80,0.06)}
+    .option:active{transform:translateY(-1px)}
+
+    .option .icon-wrap{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex:0 0 48px;background:linear-gradient(180deg,rgba(255,255,255,0.85),rgba(255,255,255,0.6));border:1px solid rgba(255,255,255,0.6);box-shadow:inset 0 1px 0 rgba(255,255,255,0.6)}
+    .option .meta{flex:1;min-width:0}
+    .option .meta .name{font-weight:700}
+    .option .meta .desc{font-size:12px;color:var(--muted);margin-top:4px}
+
+    .option .check{width:26px;height:26px;border-radius:999px;border:2px solid rgba(255,255,255,0.7);display:flex;align-items:center;justify-content:center;margin-left:8px;flex:0 0 26px;background:linear-gradient(180deg, rgba(255,255,255,0.7), rgba(255,255,255,0.45))}
+    .option[data-selected="true"]{background:linear-gradient(180deg, rgba(10,132,255,0.08), rgba(10,132,255,0.03));border:1px solid rgba(10,132,255,0.12);box-shadow:0 12px 28px rgba(10,132,255,0.06);transform:translateY(-6px)}
+    .option[data-selected="true"] .check{border-color:var(--accent);}
+
+    .pay-btn{margin-top:18px;width:100%;padding:14px 0;border-radius:16px;background:linear-gradient(180deg,var(--accent),#0062e6);color:white;border:none;font-weight:700;cursor:pointer;box-shadow:0 12px 30px rgba(10,132,255,0.18);transition:transform .12s ease}
+    .pay-btn:active{transform:translateY(1px)}
+    .pay-btn[disabled]{opacity:0.5;cursor:not-allowed;box-shadow:none}
+
+    /* micro-interaction: pulse for selected */
+    @keyframes pulse{
+      0%{box-shadow:0 6px 18px rgba(10,132,255,0.06)}
+      50%{box-shadow:0 18px 40px rgba(10,132,255,0.08)}
+      100%{box-shadow:0 6px 18px rgba(10,132,255,0.06)}
+    }
+    .option[data-selected="true"]{animation: pulse 2.8s ease-in-out infinite}
+
+    /* accessibility focus */
+    .option:focus{outline:none;box-shadow:0 0 0 6px rgba(10,132,255,0.08)}
+
+    @media (max-width:420px){.viewport{width:92vw}}
+  </style>
 </head>
 <body>
+  <div class="liquid-bg" aria-hidden="true">
+    <div class="blob b1"></div>
+    <div class="blob b2"></div>
+  </div>
 
-    <h2>Pay Dhruv</h2>
+  <div class="viewport">
+    <div class="glass-shell" role="application" aria-label="Payment to Dhruv">
+      <header class="app-header">
+        <div class="avatar" aria-hidden="true">
+          <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 120 120'><rect fill='%23f0f7ff' width='120' height='120' rx='22'/><g transform='translate(16,18)'><circle cx='40' cy='28' r='24' fill='%23dbeafe'/><rect x='0' y='64' width='88' height='18' rx='9' fill='%23dbeafe'/></g></svg>" alt="Dhruv profile"/>
+        </div>
+        <div class="title-wrap">
+          <div class="title">Pay to Dhruv</div>
+          <div class="subtitle">Choose your payment method</div>
+        </div>
+      </header>
 
-    <a class="pay-button phonepe" 
-       href="phonepe://upi/pay?pa=dhruvpanchal1901@ybl&pn=Dhruv">
-        Pay with PhonePe
-    </a>
-    
-    <a class="pay-button gpay" 
-       href="gpay://upi/pay?pa=dhruvpanchal1901@ybl&pn=Dhruv">
-        Pay with GPay
-    </a>
+      <main class="card" id="mainCard">
+        <div class="section-title">Select payment option</div>
+        <div class="options" role="list" id="optionsList">
 
-    <a class="pay-button paytm" 
-       href="paytmmp://upi/pay?pa=dhruvpanchal1901@ybl&pn=Dhruv">
-        Pay with Paytm
-    </a>
+          <div class="option" role="button" tabindex="0" data-value="phonepe" data-selected="false">
+            <div class="icon-wrap" aria-hidden="true">
+              <svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" width="24" height="24" rx="6" fill="#e6f1ff"/><path d="M7 12.5C7 9.46 9.46 7 12.5 7S18 9.46 18 12.5 15.54 18 12.5 18 7 15.54 7 12.5z" fill="#0b69ff"/></svg>
+            </div>
+            <div class="meta">
+              <div class="name">PhonePe</div>
+              <div class="desc">Pay using PhonePe app</div>
+            </div>
+            <div class="check" aria-hidden="true">
+              <svg width="14" height="10" viewBox="0 0 12 9" fill="none" xmlns="http://www.w3.org/2000/svg" style="opacity:0"><path d="M10.3 1L4.3 7 1.3 4.2" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+          </div>
 
+          <div class="option" role="button" tabindex="0" data-value="gpay" data-selected="false">
+            <div class="icon-wrap" aria-hidden="true">
+              <svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="24" height="24" rx="6" fill="#fff6ed"/><path d="M7.5 8.5l.6-1.7h5.4v2H11s.9 0 1.3 1.2c.3 1.1-.3 2.3-1.2 2.9-1 .7-2.7.6-3.8-.2C6.8 11.7 7.5 9.6 7.5 8.5z" fill="#0b1220"/></svg>
+            </div>
+            <div class="meta">
+              <div class="name">GPay</div>
+              <div class="desc">Google Pay — UPI & cards</div>
+            </div>
+            <div class="check" aria-hidden="true">
+              <svg width="14" height="10" viewBox="0 0 12 9" fill="none" xmlns="http://www.w3.org/2000/svg" style="opacity:0"><path d="M10.3 1L4.3 7 1.3 4.2" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+          </div>
+
+          <div class="option" role="button" tabindex="0" data-value="paytm" data-selected="false">
+            <div class="icon-wrap" aria-hidden="true">
+              <svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="24" height="24" rx="6" fill="#eef8ff"/><path d="M6 16h12v-2H6v2zm0-4h12V8H6v4z" fill="#0b69ff"/></svg>
+            </div>
+            <div class="meta">
+              <div class="name">Paytm</div>
+              <div class="desc">Paytm wallet & UPI</div>
+            </div>
+            <div class="check" aria-hidden="true">
+              <svg width="14" height="10" viewBox="0 0 12 9" fill="none" xmlns="http://www.w3.org/2000/svg" style="opacity:0"><path d="M10.3 1L4.3 7 1.3 4.2" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+          </div>
+
+        </div>
+
+        <button id="payBtn" class="pay-btn" disabled aria-disabled="true">Pay</button>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    // selection + deep-link redirect
+    (function(){
+      const options = Array.from(document.querySelectorAll('.option'));
+      const payBtn = document.getElementById('payBtn');
+      let selected = null;
+
+      const links = {
+        phonepe: "phonepe://upi/pay?pa=dhruvpanchal1901@ybl&pn=Dhruv",
+        gpay:   "gpay://upi/pay?pa=dhruvpanchal1901@ybl&pn=Dhruv",
+        paytm:  "paytmmp://upi/pay?pa=dhruvpanchal1901@ybl&pn=Dhruv"
+      };
+
+      function setSelected(el){
+        options.forEach(o=>{
+          const svg = o.querySelector('.check svg');
+          o.setAttribute('data-selected', o===el ? 'true':'false');
+          if(svg) svg.style.opacity = o===el ? '1':'0';
+        });
+        selected = el.getAttribute('data-value');
+        payBtn.disabled = false;
+        payBtn.removeAttribute('aria-disabled');
+        // subtle haptic-like microinteraction: focus then scale
+        payBtn.animate([{transform:'translateY(0)'},{transform:'translateY(-2px)'}],{duration:160,fill:'forwards',easing:'cubic-bezier(.2,.9,.3,1)'});
+      }
+
+      options.forEach(op=>{
+        op.addEventListener('click',()=> setSelected(op));
+        op.addEventListener('keydown',(e)=>{
+          if(e.key==='Enter' || e.key===' '){ e.preventDefault(); setSelected(op); }
+          const idx = options.indexOf(op);
+          if(e.key==='ArrowDown'){ e.preventDefault(); options[(idx+1)%options.length].focus(); }
+          if(e.key==='ArrowUp'){ e.preventDefault(); options[(idx-1+options.length)%options.length].focus(); }
+        });
+      });
+
+      payBtn.addEventListener('click',()=>{
+        if(!selected) return;
+        const url = links[selected];
+        if(!url) return;
+
+        // smooth overlay before redirect (micro UX)
+        const overlay = document.createElement('div');
+        overlay.style.position='fixed';overlay.style.inset=0;overlay.style.zIndex=9999;overlay.style.display='flex';overlay.style.alignItems='center';overlay.style.justifyContent='center';
+        overlay.style.background='rgba(6,10,25,0.28)';overlay.style.backdropFilter='blur(6px)';
+        const pill = document.createElement('div');pill.style.padding='14px 18px';pill.style.borderRadius='12px';pill.style.background='linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,255,255,0.75))';pill.style.boxShadow='0 8px 24px rgba(4,26,64,0.16)';pill.innerText='Redirecting to app...';
+        overlay.appendChild(pill);document.body.appendChild(overlay);
+
+        // attempt opening deep link
+        window.location.href = url;
+
+        // fallback: remove overlay after short timeout (if browser blocked)
+        setTimeout(()=>{ try{ document.body.removeChild(overlay);}catch(e){} }, 1200);
+      });
+
+    })();
+  </script>
 </body>
 </html>
