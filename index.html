@@ -7,29 +7,60 @@
     <style>
         body { 
             display: flex; 
+            flex-direction: column;
             justify-content: center; 
             align-items: center; 
-            height: 100vh; 
+            min-height: 100vh; 
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             background-color: #f0f2f5;
             margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
         }
-        a.pay-button {
+        .pay-button {
             display: block;
-            padding: 20px 40px;
-            font-size: 24px;
+            width: 80%;
+            max-width: 300px;
+            padding: 20px;
+            margin-bottom: 20px;
+            font-size: 20px;
             font-weight: bold;
             color: #ffffff;
-            background-color: #007aff;
             border-radius: 12px;
             text-decoration: none;
             text-align: center;
         }
+        /* PhonePe Button */
+        .phonepe { background-color: #6739B7; }
+        /* GPay Button */
+        .gpay { background-color: #4285F4; }
+        /* Paytm Button */
+        .paytm { background-color: #00BAF2; }
+
+        h2 {
+            font-weight: 500;
+            color: #333;
+        }
     </style>
 </head>
 <body>
-    <a class="pay-button" href="upi://pay?pa=dhruvpanchal1901@ybl&pn=Dhruv">
-        Tap to Pay Dhruv
+
+    <h2>Pay Dhruv</h2>
+
+    <a class="pay-button phonepe" 
+       href="phonepe://upi/pay?pa=dhruvpanchal1901@ybl&pn=Dhruv">
+        Pay with PhonePe
     </a>
+    
+    <a class="pay-button gpay" 
+       href="gpay://upi/pay?pa=dhruvpanchal1901@ybl&pn=Dhruv">
+        Pay with GPay
+    </a>
+
+    <a class="pay-button paytm" 
+       href="paytmmp://upi/pay?pa=dhruvpanchal1901@ybl&pn=Dhruv">
+        Pay with Paytm
+    </a>
+
 </body>
 </html>
